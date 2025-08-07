@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registration Form with JS Validation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .register-container {
+      background: white;
+      padding: 30px 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin: 10px 0 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .error {
+      color: red;
+      font-size: 0.9em;
+      margin-bottom: 10px;
+      display: none;
+    }
+    button {
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="register-container">
+  <h2>Register</h2>
+  <form id="registrationForm" novalidate>
+    <input 
+      type="text" 
+      id="usernameOrEmail" 
+      name="usernameOrEmail" 
+      placeholder="Username or Email" 
+      autocomplete="username"
+      required
+    />
+    <div id="usernameOrEmailError" class="error">Please enter a valid username or email.</div>
+
+    <input 
+      type="password" 
+      id="password" 
+      name="password" 
+      placeholder="Password" 
+      autocomplete="new-password"
+      required
+    />
+    <div id="passwordError" class="error">Password must be at least 6 characters.</div>
+
+    <button type="submit">Register</button>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById('registrationForm');
+  const usernameOrEmailInput = document.getElementById('usernameOrEmail');
+  const passwordInput = document.getElementById('password');
+
+  const usernameOrEmailError = document.getElementById('usernameOrEmailError');
+  const passwordError = document.getElementById('passwordError');
+
+  // Simple email validation regex
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  // Username validation (alphanumeric, underscores, 3-15 chars)
+  function isValidUsername(username) {
+    return /^[a-zA-Z0-9_]{3,15}$/.test(username);
+  }
+
+  // Validate the usernameOrEmail field
+  function validateUsernameOrEmail() {
+    const value = usernameOrEmailInput.value.trim();
+
+    if (value.includes('@')) {
+      // Treat as email
+      if (!isValidEmail(value)) {
+        usernameOrEmailError.style.display = 'block';
+        return false;
+      }
+    } else {
+      // Treat as username
+      if (!isValidUsername(value)) {
+        usernameOrEmailError.style.display = 'block';
+        return false;
+      }
+    }
+
+    usernameOrEmailError.style.display = 'none';
+    return true;
+  }
+
+  // Validate the password field
+  function validatePassword() {
+    if (passwordInput.value.length < 6) {
+      passwordError.style.display = 'block';
+      return false;
+    }
+    passwordError.style.display = 'none';
+    return true;
+  }
+
+  usernameOrEmailInput.addEventListener('input', validateUsernameOrEmail);
+  passwordInput.addEventListener('input', validatePassword);
+
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const validUsernameOrEmail = validateUsernameOrEmail();
+    const validPassword = validatePassword();
+
+    if (!validUsernameOrEmail || !validPassword) {
+      return; // Don't submit if invalid
+    }
+
+    // All validations passed
+    alert('Registration successful!');
+
+    // Here you can send data to server, for now just reset form
+    form.reset();
+  });
+</script>
+
+</body>
+</html>
